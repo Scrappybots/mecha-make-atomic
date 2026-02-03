@@ -1,0 +1,87 @@
+ref: fedora/43/aarch64/mecha-comet
+gpg_verify_commit: false
+repos:
+  - fedora
+  - fedora-updates
+  - mecha-comet-rpm
+
+# Define repositories (usually inline or via /etc/yum.repos.d in the build env, 
+# but for rpm-ostree we need to ensure they are available to the builder or defined here.
+# Since we are running in a container, we will rely on the container's repos + custom ones we inject).
+# Ideally, we put the full repo definition here or expect the builder to have them.
+# For simplicity in this manifest, we can define the custom one under 'etc/yum.repos.d' in the overlay
+# OR specifically add a repo definition block if we were using a more complex composition tool.
+# However, standard rpm-ostree Treefiles expect 'repos' to match what's available in the system context.
+# We will make sure 'mecha-comet-rpm' is available in the builder container or via arguments.
+
+selinux: true
+boot_location: modules
+# boot_mode: uefi  # Optional, depending on target
+
+packages:
+  # Base
+  - @core
+  - @base-graphical
+  - @multimedia
+  - @networkmanager-submodules
+  - @standard
+  - kernel
+  - kernel-modules
+  - kernel-modules-extra
+  # From mkosi.conf
+  - alacritty
+  - bluez
+  - cpufrequtils
+  - evtest
+  - google-noto-emoji-fonts
+  - google-noto-fonts-all
+  - greetd
+  - gsettings-desktop-schemas
+  - htop
+  - i2c-tools
+  - impeller
+  - libgpiod-utils
+  # Mechanix packages
+  - mechanix-extension-service
+  - mechanix-files
+  - mechanix-fonts
+  - mechanix-keyboard
+  - mechanix-launcher
+  - mechanix-music
+  - mechanix-notes
+  - mechanix-settings
+  - mechanix-system-service
+  - mechanix-wallpapers
+  - mesa-demos
+  - mpv-devel
+  - mpv-libs
+  - mpv
+  - mutter
+  - mxconf
+  - mxsearch
+  - nano
+  - openssh-server
+  - phoc
+  - seatd
+  - session_service
+  - sudo
+  - systemd
+  - systemd-boot-unsigned
+  - upower
+  - usbutils
+  - weston-demo
+  - xdg-user-dirs
+  - xorg-x11-server-Xwayland
+  # Custom packages explicitly listed
+  - nxp-firmware
+  - squeekboard
+
+# Post-processing usually handles groups, but rpm-ostree handles them via @
+
+documentation: true
+
+postprocess:
+  # Post-install scripts or similar logic can go here if needed, 
+  # but rpm-ostree discouraged arbitrary scripts. 
+  # We use systemd units enabled via preset or symlinks in overlay.
+  []
